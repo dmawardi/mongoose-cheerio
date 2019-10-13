@@ -101,8 +101,8 @@ app.get("/comments/:id", function(req, res) {
   // Finish the route so it finds one article using the req.params.id,
   // and run the populate method with "note",
   // then responds with the article with the note included
-  console.log("requesting articles",req.params.id);
-  db.Article.findOne({_id: req.params.id}).populate('comments').then(function(data){
+  console.log("requesting comments",req.params.id);
+  db.Article.findOne({_id: req.params.id}).populate('comments').exec().then(function(data){
     console.log('server', data);
     res.json(data.comments);
   }).catch(function(err){
