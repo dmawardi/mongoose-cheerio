@@ -40,12 +40,14 @@ function editOrCreateArticleCommentSection(data) {
 
   }
 
-// Grab the articles as a json
+  // Arguments begin here
+// Grab the articles and display
 $.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].headline + "<br />" + data[i].link + "</p>");
+    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].headline + "<br />" + data[i].summary + "</p>" +
+    "<button data-id='" + data[i]._id + "' id='newCommentButton'>Article Comment</button>");
 
     // Create comment button
     let commentButton = $('<button>');
@@ -57,7 +59,7 @@ $.getJSON("/articles", function(data) {
     let commentDiv = $('<div>');
     commentDiv.attr('id', 'commentSection'+data[i]._id);
 
-    // Append to articles
+    // Append to articles section
     $("#articles").append(commentButton);
     $("#articles").append(commentDiv);
   }
@@ -117,7 +119,7 @@ $(document).on("click", "#commentButton", function() {
 });
 
 // Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+$(document).on("click", "#newCommentButton", function() {
   // Save the id from the p tag
   var thisId = $(this).attr("data-id");
   console.log(thisId);
