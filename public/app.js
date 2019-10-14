@@ -45,24 +45,38 @@ function displayComments(data, idOfArticle) {
   for (let i = 0; i < data.length; i++) {
 
     console.log(data[i]);
+    // Init bootstrap card
+    let card = $('<div>');
+    let cardBody = $('<div>');
     // Init header, text and button for appending
-    let title = $('<h4>');
-    let body = $('<p>');
+    let title = $('<h5>');
+    let body = $('<h6>');
     let editButton = $('<button>');
 
     // Add attributes and details from data as required
+    card.addClass("card");
+    cardBody.addClass("card-body");
+    title.addClass("card-title");
+    body.addClass("card-subtitle mb-2 text-muted");
+
     title.html(data[i].title);
     body.html(data[i].body);
     editButton.html('Edit');
     editButton.attr('data-id', data[i]._id);
     editButton.attr('id', 'editCommentButton');
+    editButton.addClass("btn btn-primary")
+
+    // Append elements to card
+    cardBody.append(title);
+    cardBody.append(body);
+    cardBody.append(editButton);
+    card.append(cardBody);
+
+
 
     // Append created items to current targeted comment section
-    currentCommentSection.append(title);
-    // An input to enter a new title
-    currentCommentSection.append(body);
+    currentCommentSection.append(card);
     // A textarea to add a new note body
-    currentCommentSection.append(editButton);
   }
 
 }
@@ -71,8 +85,31 @@ function displayArticles(data) {
   // Iterate through items in data
   for (var i = 0; i < data.length; i++) {
     // Create text and comment button with required details from data
-    let textAndNewCommentButton = "<p>" + data[i].headline + "<br />" + data[i].summary + "</p>" +
-      "<button data-id='" + data[i]._id + "' id='newCommentButton'>New Article Comment</button>";
+    // Init bootstrap card
+    let card = $('<div>');
+    let cardBody = $('<div>');
+    // Init header, text and button for appending
+    let title = $('<h5>');
+    let body = $('<h6>');
+    let newCommentButton = $('<button>');
+    // Add attributes and details from data as required
+    card.addClass("card");
+    cardBody.addClass("card-body");
+    title.addClass("card-title");
+    body.addClass("card-subtitle mb-2 text-muted");
+    title.html(data[i].headline);
+    body.html(data[i].summary);
+    // Button creation and setup
+    newCommentButton.html('New Article Comment');
+    newCommentButton.attr('data-id', data[i]._id);
+    newCommentButton.attr('id', 'newCommentButton');
+    newCommentButton.addClass("btn btn-secondary");
+
+    cardBody.append(title);
+    cardBody.append(body);
+    cardBody.append(newCommentButton);
+    card.append(cardBody);
+
 
     // Create comment button and apply attributes
     let commentButton = $('<button>');
@@ -83,9 +120,10 @@ function displayArticles(data) {
     // Create comment div and apply attributes (for later appending comments)
     let commentDiv = $('<div>');
     commentDiv.attr('id', 'commentSection' + data[i]._id);
+    commentDiv.addClass('commentSection');
 
     // Append comment button and div to articles section
-    $("#articles").append(textAndNewCommentButton);
+    $("#articles").append(card);
     $("#articles").append(commentButton);
     $("#articles").append(commentDiv);
   }

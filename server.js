@@ -77,8 +77,8 @@ app.get("/scrape", function(req, res) {
         }        
     });
 
-    // Send a message to the client
-    res.send("Scrape Complete");
+    // Redirect user back to main page with newly scraped images now present
+    res.redirect('/');
   });
 });
 

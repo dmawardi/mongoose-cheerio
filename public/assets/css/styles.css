@@ -5,7 +5,7 @@ body { background-color: #F2F6D0 }
         margin-right: auto;
         padding-top: 5%;
       }
-      #articles {
+      /* #articles {
         display: inline-block;
         overflow: auto;
         width: 60%;
@@ -14,7 +14,7 @@ body { background-color: #F2F6D0 }
       #comments {
         float: right;
         width: 30%;
-      }
+      } */
       textarea, input {
         display: block;
         width: 100%;
@@ -27,4 +27,8 @@ body { background-color: #F2F6D0 }
       textarea {
         height: 200px;
         font-size: 18px;
+      }
+
+      .commentSection {
+          margin-left: 25px;
       }

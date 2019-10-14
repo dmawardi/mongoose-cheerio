@@ -13,14 +13,43 @@
 </head>
 
 <body>
+  <div class="container">
+    <div class="jumbotron">
+        <h1 class="display-4">Engadget Article Scraper</h1>
+        <p class="lead">Scrapes Engagdget and displays articles. Allows you to add comments to articles</p>
+        <hr class="my-4">
+        <p>Press button below to scrape from Engadget!</p>
+        <a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape</a>
+      </div>
+
+
+      <!-- Row of comments and comment editor -->
+      <div class="row">
+        <div class="col-9">
+
+          <!-- Article section for appending articles and comment sections -->
+          <div id="articles"></div>
+        </div>
+
+
+        <div class="col-3">
+
+          <!-- Note section used for editing and creating new comments -->
+          <div id="comments"></div>
+
+
+        </div>
+
+
+
+      </div>
+
+  </div>
+
   <div id="wrapper">
     <h1>Engadget Article Scraper</h1>
     <h2>Scrapes Engagdget and displays articles. Allows you to add comments to articles</h2>
 
-    <!-- Article section for appending articles and comment sections -->
-    <div id="articles"></div>
-    <!-- Note section used for editing and creating new comments -->
-    <div id="comments"></div>
 
   </div>
 
