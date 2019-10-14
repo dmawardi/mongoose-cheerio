@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Mongoose Scraping to Mongo DB</title>
+  <title>Cheerio Scraping to Mongo DB with Mongoose</title>
   <link rel="stylesheet" type="text/css" href="./assets/css/styles.css">
 
   <!-- Bootstrap -->
@@ -15,10 +15,16 @@
 <body>
   <div id="wrapper">
     <h1>Engadget Article Scraper</h1>
-    <h2>Scrapes Engagdget and display. Allows you to add comments to articles</h2>
+    <h2>Scrapes Engagdget and displays articles. Allows you to add comments to articles</h2>
+
+    <!-- Article section for appending articles and comment sections -->
     <div id="articles"></div>
-    <div id="notes"></div>
+    <!-- Note section used for editing and creating new comments -->
+    <div id="comments"></div>
+
   </div>
+
+  <!-- JS scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="app.js"></script>
   <!-- Bootstrap -->
