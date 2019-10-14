@@ -1,53 +1,64 @@
 // Function List
-function editOrCreateArticleCommentSection(data) {
+function editOrCreateArticleCommentSection(data, editOrCreate) {
   let noteSection = $("#notes");
   let header = $('<h4>');
   // Empty the notes from the note section
   noteSection.empty();
-  // fill in header text
   header.html(data.headline);
 
+  if (editOrCreate === "create") {
+    // Append sections
+    noteSection.append(header);
+    noteSection.append("<input id='titleinput' name='title' >");
+    noteSection.append("<textarea id='bodyinput' name='body'></textarea>");
+    noteSection.append("<button data-id='" + data._id + "' id='savenote'>New Comment</button>");
 
-  // Append sections
-  noteSection.append(header);
-  noteSection.append("<input id='titleinput' name='title' >");
-  noteSection.append("<textarea id='bodyinput' name='body'></textarea>");
-  noteSection.append("<button data-id='" + data._id + "' id='savenote'>New Comment</button>");
-  
+  } else if (editOrCreate === "edit") {
+    // Append sections
+    noteSection.append(header);
+    noteSection.append("<input id='titleinput' name='title' >");
+    noteSection.append("<textarea id='bodyinput' name='body'>" + data.summary + "</textarea>");
+    noteSection.append("<button data-id='" + data._id + "' id='editnote'>Edit Comment</button>");
+    $("#titleinput").val(data.title);
+    // Place the body of the note in the body textarea
+    $("#bodyinput").val(data.body);
   }
 
-  // takes data and id of article to display comments
-  function displayComments(data, idOfArticle) {
-    let currentCommentSection = $('#commentSection'+idOfArticle);
-    for (let i = 0; i < data.length; i++) {
-      console.log(data[i]);
-      let title = $('<h4>');
-      let body = $('<p>');
-      let editButton = $('<button>');
-      
-      title.html(data[i].title);
-      body.html(data[i].body);
-      editButton.html('Edit');
-      editButton.attr('data-id', data[i]._id);
-      editButton.attr('id', 'editCommentButton');
 
-      currentCommentSection.append(title);
-      // An input to enter a new title
-      currentCommentSection.append(body);
-      // A textarea to add a new note body
-      currentCommentSection.append(editButton);
-    }
+}
 
+// takes data and id of article to display comments
+function displayComments(data, idOfArticle) {
+  let currentCommentSection = $('#commentSection' + idOfArticle);
+  for (let i = 0; i < data.length; i++) {
+    console.log(data[i]);
+    let title = $('<h4>');
+    let body = $('<p>');
+    let editButton = $('<button>');
+
+    title.html(data[i].title);
+    body.html(data[i].body);
+    editButton.html('Edit');
+    editButton.attr('data-id', data[i]._id);
+    editButton.attr('id', 'editCommentButton');
+
+    currentCommentSection.append(title);
+    // An input to enter a new title
+    currentCommentSection.append(body);
+    // A textarea to add a new note body
+    currentCommentSection.append(editButton);
   }
 
-  // Arguments begin here
+}
+
+// Arguments begin here
 // Grab the articles and display
-$.getJSON("/articles", function(data) {
+$.getJSON("/articles", function (data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
     $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].headline + "<br />" + data[i].summary + "</p>" +
-    "<button data-id='" + data[i]._id + "' id='newCommentButton'>Article Comment</button>");
+      "<button data-id='" + data[i]._id + "' id='newCommentButton'>New Article Comment</button>");
 
     // Create comment button
     let commentButton = $('<button>');
@@ -57,7 +68,7 @@ $.getJSON("/articles", function(data) {
     commentButton.attr('id', 'commentButton');
     // Create comment div (for later appending comments)
     let commentDiv = $('<div>');
-    commentDiv.attr('id', 'commentSection'+data[i]._id);
+    commentDiv.attr('id', 'commentSection' + data[i]._id);
 
     // Append to articles section
     $("#articles").append(commentButton);
@@ -66,41 +77,41 @@ $.getJSON("/articles", function(data) {
 });
 
 // Whenever someone clicks to display a comment
-$(document).on("click", "#commentButton", function() {
+$(document).on("click", "#commentButton", function () {
   // Empty the notes from the note section
   // Save the id from the p tag
   let currentCommentButton = $(this);
   var thisId = currentCommentButton.attr("data-id");
   var currentButtonState = currentCommentButton.attr("data-state");
-  let currentCommentSection = $('#commentSection'+thisId);
+  let currentCommentSection = $('#commentSection' + thisId);
 
   if (currentButtonState === "hide") {
     // Empty section just in case
     currentCommentSection.empty();
-  
+
     // Now make an ajax call for the comments of the article using id
     $.ajax({
-      method: "GET",
-      url: "/comments/" + thisId
-    })
+        method: "GET",
+        url: "/comments/" + thisId
+      })
       // With that done, add the note information to the page
-      .then(function(data) {
+      .then(function (data) {
         console.log('comment front', data);
         // Change text and state of comment button
         currentCommentButton.html('Hide Comments');
         currentCommentButton.attr('data-state', 'display');
-        
-        
+
+
         console.log('comment front data length', data.length);
-        
+
         if (data.length) {
-          
+
           // Display comments for this article on page
           displayComments(data, thisId);
-        // A button to submit a new note, with the id of the article saved to it
-        // currentCommentSection.append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-  
-        // If there's a note in the article
+          // A button to submit a new note, with the id of the article saved to it
+          // currentCommentSection.append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+
+          // If there's a note in the article
           // Place the title of the note in the title input
           // $("#titleinput").val(data.comments.title);
           // Place the body of the note in the body textarea
@@ -119,22 +130,22 @@ $(document).on("click", "#commentButton", function() {
 });
 
 // Whenever someone clicks a p tag
-$(document).on("click", "#newCommentButton", function() {
+$(document).on("click", "#newCommentButton", function () {
   // Save the id from the p tag
   var thisId = $(this).attr("data-id");
   console.log(thisId);
-  
+
   // Now make an ajax call for the Article
   $.ajax({
-    method: "GET",
-    url: "/articles/" + thisId
-  })
-  // With that done, add the note information to the page
-  .then(function(data) {
-    console.log("create: ",data);
-    
-    
-      editOrCreateArticleCommentSection(data);
+      method: "GET",
+      url: "/articles/" + thisId
+    })
+    // With that done, add the note information to the page
+    .then(function (data) {
+      console.log("create: ", data);
+
+
+      editOrCreateArticleCommentSection(data, 'create');
 
 
       console.log('front', data);
@@ -157,23 +168,23 @@ $(document).on("click", "#newCommentButton", function() {
 });
 
 // When you click the savenote button
-$(document).on("click", "#savenote", function() {
+$(document).on("click", "#savenote", function () {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
-    method: "POST",
-    url: "/articles/" + thisId,
-    data: {
-      // Value taken from title input
-      title: $("#titleinput").val(),
-      // Value taken from note textarea
-      body: $("#bodyinput").val()
-    }
-  })
+      method: "POST",
+      url: "/articles/" + thisId,
+      data: {
+        // Value taken from title input
+        title: $("#titleinput").val(),
+        // Value taken from note textarea
+        body: $("#bodyinput").val()
+      }
+    })
     // With that done
-    .then(function(data) {
+    .then(function (data) {
       // Log the response
       console.log(data);
       // Empty the notes section
@@ -183,4 +194,71 @@ $(document).on("click", "#savenote", function() {
   // Also, remove the values entered in the input and textarea for note entry
   $("#titleinput").val("");
   $("#bodyinput").val("");
+});
+
+// When you click the editnote button
+$(document).on("click", "#editnote", function () {
+  // Grab the id associated with the article from the submit button
+  var thisId = $(this).attr("data-id");
+
+  // Run a POST request to change the note, using what's entered in the inputs
+  $.ajax({
+      method: "PUT",
+      url: "/comments/" + thisId,
+      data: {
+        // Value taken from title input
+        title: $("#titleinput").val(),
+        // Value taken from note textarea
+        body: $("#bodyinput").val()
+      }
+    })
+    // With that done
+    .then(function (data) {
+      // Log the response
+      console.log(data);
+      // Empty the notes section
+      $("#notes").empty();
+    });
+
+  // Also, remove the values entered in the input and textarea for note entry
+  $("#titleinput").val("");
+  $("#bodyinput").val("");
+});
+
+// Whenever someone clicks a p tag
+$(document).on("click", "#editCommentButton", function () {
+  // Save the id from the p tag
+  var thisId = $(this).attr("data-id");
+  console.log(thisId);
+
+  // Now make an ajax call for the Article
+  $.ajax({
+      method: "GET",
+      url: "/editComment/" + thisId
+    })
+    // With that done, add the note information to the page
+    .then(function (data) {
+      console.log("create: ", data);
+
+
+      editOrCreateArticleCommentSection(data, 'edit');
+
+
+      console.log('front', data);
+      // The title of the article
+      // $("#notes").append("<h2>" + data.title + "</h2>");
+      // // An input to enter a new title
+      // $("#notes").append("<input id='titleinput' name='title' >");
+      // // A textarea to add a new note body
+      // $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+      // A button to submit a new note, with the id of the article saved to it
+
+      // If there's a note in the article
+      if (data.comments) {
+        // Place the title of the note in the title input
+        $("#titleinput").val(data.comments.title);
+        // Place the body of the note in the body textarea
+        $("#bodyinput").val(data.comments.body);
+      }
+    });
 });

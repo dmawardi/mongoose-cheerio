@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/articlesdb", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/articlesdb", { useNewUrlParser: true, useFindAndModify: false });
 
 // Routes
 
@@ -130,6 +130,22 @@ app.get("/comments/:id", function(req, res) {
   })
 });
 
+// Route for grabbing article comments
+app.get("/editComment/:id", function(req, res) {
+  // TODO
+  // ====
+  // Finish the route so it finds one article using the req.params.id,
+  // and run the populate method with "note",
+  // then responds with the article with the note included
+  console.log("requesting comments",req.params.id);
+  db.Comment.findOne({_id: req.params.id}).then(function(data){
+    console.log('server', data);
+    res.json(data);
+  }).catch(function(err){
+    res.json(err);
+  })
+});
+
 // Route for creating a new comment
 app.post("/articles/:id", function(req, res) {
   // TODO
@@ -150,18 +166,15 @@ app.post("/articles/:id", function(req, res) {
 
 // TODO
 // Route for editing a comment
-app.put("/articles/:id", function(req, res) {
+app.put("/comments/:id", function(req, res) {
+  console.log('edit comment route', req.body);
   // TODO
   // ====
   // save the new note that gets posted to the Notes collection
   // then find an article from the req.params.id
   // and update it's "note" property with the _id of the new note
-  db.Comment.findOneAndUpdate(req.body).then(function(newComment){
-    console.log('comment updated');
-    return db.Article.findOneAndUpdate({_id: req.params.id}, { $push: { comments: newComment.id } }, { new: true })
-  })
-  .then(function(data){
-    console.log('User added note: ', data);
+  db.Comment.findOneAndUpdate({_id: req.params.id}, req.body).then(function(data){
+    console.log('User edited note: ', data);
     res.json(data);
   }).catch(function(err){
     res.json(err);
