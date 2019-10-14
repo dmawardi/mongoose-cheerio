@@ -1,11 +1,11 @@
 // Function List
 function editOrCreateArticleCommentSection(data) {
   let noteSection = $("#notes");
-  let header = $('<h2>');
+  let header = $('<h4>');
   // Empty the notes from the note section
   noteSection.empty();
   // fill in header text
-  header.html(data.title);
+  header.html(data.headline);
 
 
   // Append sections
@@ -16,12 +16,36 @@ function editOrCreateArticleCommentSection(data) {
   
   }
 
+  // takes data and id of article to display comments
+  function displayComments(data, idOfArticle) {
+    let currentCommentSection = $('#commentSection'+idOfArticle);
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i]);
+      let title = $('<h4>');
+      let body = $('<p>');
+      let editButton = $('<button>');
+      
+      title.html(data[i].title);
+      body.html(data[i].body);
+      editButton.html('Edit');
+      editButton.attr('data-id', data[i]._id);
+      editButton.attr('id', 'editCommentButton');
+
+      currentCommentSection.append(title);
+      // An input to enter a new title
+      currentCommentSection.append(body);
+      // A textarea to add a new note body
+      currentCommentSection.append(editButton);
+    }
+
+  }
+
 // Grab the articles as a json
 $.getJSON("/articles", function(data) {
   // For each one
   for (var i = 0; i < data.length; i++) {
     // Display the apropos information on the page
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].headline + "<br />" + data[i].link + "</p>");
 
     // Create comment button
     let commentButton = $('<button>');
@@ -69,24 +93,8 @@ $(document).on("click", "#commentButton", function() {
         
         if (data.length) {
           
-          for (let i = 0; i < data.length; i++) {
-            console.log(data[i]);
-            let header = $('<h2>');
-            let body = $('<p>');
-            let editButton = $('<button>');
-            
-            header.html(data[i].title);
-            body.html(data[i].body);
-            editButton.html('Edit');
-            editButton.attr('data-id', data[i]._id);
-            editButton.attr('id', 'editCommentButton');
-      
-            currentCommentSection.append(header);
-            // An input to enter a new title
-            currentCommentSection.append(body);
-            // A textarea to add a new note body
-            currentCommentSection.append(editButton);
-          }
+          // Display comments for this article on page
+          displayComments(data, thisId);
         // A button to submit a new note, with the id of the article saved to it
         // currentCommentSection.append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
   
@@ -121,7 +129,7 @@ $(document).on("click", "p", function() {
   })
   // With that done, add the note information to the page
   .then(function(data) {
-    console.log("edit or create: ",data);
+    console.log("create: ",data);
     
     
       editOrCreateArticleCommentSection(data);

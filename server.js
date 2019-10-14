@@ -44,23 +44,35 @@ app.get("/scrape", function(req, res) {
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this)
+      result.headline = $(this)
         .children("a")
         .text();
       result.link = $(this)
         .children("a")
         .attr("href");
 
-      // Create a new Article using the `result` object built from scraping
-      db.Article.create(result)
-        .then(function(dbArticle) {
-          // View the added result in the console
-          console.log(dbArticle);
+        // Check if record already exists
+        db.Article.exists({ headline: result.headline }, function(exists){
+          console.log("article exists: ",exists);
         })
-        .catch(function(err) {
-          // If an error occurred, log it
-          console.log(err);
-        });
+
+        let articleExists = false;
+
+        if (articleExists) {
+          console.log('article exists, skipping');
+        } else {
+          // Create a new Article using the `result` object built from scraping
+          db.Article.create(result)
+            .then(function(dbArticle) {
+              // View the added result in the console
+              console.log("Created:",dbArticle);
+            })
+            .catch(function(err) {
+              // If an error occurred, log it
+              console.log(err);
+            });
+
+        }
     });
 
     // Send a message to the client
@@ -110,7 +122,7 @@ app.get("/comments/:id", function(req, res) {
   })
 });
 
-// Route for saving/updating an Article's associated Note
+// Route for creating a new comment
 app.post("/articles/:id", function(req, res) {
   // TODO
   // ====
@@ -118,6 +130,26 @@ app.post("/articles/:id", function(req, res) {
   // then find an article from the req.params.id
   // and update it's "note" property with the _id of the new note
   db.Comment.create(req.body).then(function(newComment){
+    return db.Article.findOneAndUpdate({_id: req.params.id}, { $push: { comments: newComment.id } }, { new: true })
+  })
+  .then(function(data){
+    console.log('User added note: ', data);
+    res.json(data);
+  }).catch(function(err){
+    res.json(err);
+  })
+});
+
+// TODO
+// Route for editing a comment
+app.put("/articles/:id", function(req, res) {
+  // TODO
+  // ====
+  // save the new note that gets posted to the Notes collection
+  // then find an article from the req.params.id
+  // and update it's "note" property with the _id of the new note
+  db.Comment.findOneAndUpdate(req.body).then(function(newComment){
+    console.log('comment updated');
     return db.Article.findOneAndUpdate({_id: req.params.id}, { $push: { comments: newComment.id } }, { new: true })
   })
   .then(function(data){
