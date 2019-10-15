@@ -8,7 +8,7 @@ var cheerio = require("cheerio");
 // Require db models
 var db = require("./models");
 
-// set port to 3000
+// set port to 3000 or server port
 var PORT = process.env.PORT || 3000;
 
 // Initialize Express
@@ -45,9 +45,10 @@ app.get("/scrape", function(req, res) {
       // grab the required details from the page and store in results
       // Grab headline
       result.headline = $("div.th-title", this)
+      // Remove new lines and trim whitespace
         .text().replace(/\n/g, '').trim();
       // Grab summary if exists
-        result.summary = $("p", this)
+      result.summary = $("p", this)
         .text();
 
         // Grab link if exists
@@ -57,12 +58,15 @@ app.get("/scrape", function(req, res) {
 
         // If result link is not "#" and contains a value
         if (result.link && result.link !== "#") {
+          let article = new db.Article(result);
+          // Use link parser before adding to database
+          article.linkParser();
           // Check if record already exists
           db.Article.exists({ link: result.link }).then(function(exists){
             // If not, proceed to create
             if (!exists) {
               // Create a new Article
-              db.Article.create(result)
+              db.Article.create(article)
                 .then(function(dbArticle) {
                   // View the added result in the console
                   console.log("Created:", dbArticle);

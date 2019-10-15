@@ -90,6 +90,7 @@ function displayArticles(data) {
     let cardBody = $('<div>');
     // Init header, text and button for appending
     let title = $('<h5>');
+    let linkEncase = $('<a>');
     let body = $('<h6>');
     let newCommentButton = $('<button>');
     // Add attributes and details from data as required
@@ -97,7 +98,12 @@ function displayArticles(data) {
     cardBody.addClass("card-body");
     title.addClass("card-title");
     body.addClass("card-subtitle mb-2 text-muted");
+    // Build link and encase around title
+    linkEncase.attr('href', data[i].link);
+    linkEncase.attr('target', '_blank');
     title.html(data[i].headline);
+    linkEncase.append(title);
+    // Use summary as body text of card
     body.html(data[i].summary);
     // Button creation and setup
     newCommentButton.html('New Article Comment');
@@ -106,7 +112,7 @@ function displayArticles(data) {
     newCommentButton.addClass("btn btn-secondary");
 
     // Appending items to cardboy and card
-    cardBody.append(title);
+    cardBody.append(linkEncase);
     cardBody.append(body);
     cardBody.append(newCommentButton);
     card.append(cardBody);

@@ -37,6 +37,16 @@ var ArticleSchema = new Schema({
   timestamps: true
 });
 
+// Custom method to parse scraped links
+ArticleSchema.methods.linkParser = function() {
+  // determines if link requires parsing
+  if (!this.link.includes("http")) {
+    this.link = "https://www.engadget.com"+this.link
+  }
+  // Return the new link
+  return this.link;
+};
+
 
 // This creates our model from the above schema, using mongoose's model method
 var Article = mongoose.model("Article", ArticleSchema);
