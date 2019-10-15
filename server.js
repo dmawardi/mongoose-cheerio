@@ -82,6 +82,11 @@ app.get("/scrape", function(req, res) {
   });
 });
 
+app.get("/", function(req, res) {
+  // Grab the body of the html with axios
+  res.sendFile('public/index.html');
+});
+
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
   // Find all articles within db
