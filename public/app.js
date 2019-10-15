@@ -105,6 +105,7 @@ function displayArticles(data) {
     newCommentButton.attr('id', 'newCommentButton');
     newCommentButton.addClass("btn btn-secondary");
 
+    // Appending items to cardboy and card
     cardBody.append(title);
     cardBody.append(body);
     cardBody.append(newCommentButton);
