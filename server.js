@@ -90,7 +90,7 @@ app.get("/", function(req, res) {
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
   // Find all articles within db
-  db.Article.find().then(function(data){
+  db.Article.find().sort({'createdAt': 'desc'}).then(function(data){
     // Send results to user
     res.json(data);
   }).catch(function(err){
